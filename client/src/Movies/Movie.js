@@ -1,6 +1,9 @@
 import React from "react";
 import axios from "axios";
+
 import MovieCard from "./MovieCard";
+
+
 export default class Movie extends React.Component {
   constructor(props) {
     super(props);
@@ -15,6 +18,7 @@ export default class Movie extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
+    console.log(newProps)
     if (this.props.match.params.id !== newProps.match.params.id) {
       this.fetchMovie(newProps.match.params.id);
     }
@@ -33,6 +37,14 @@ export default class Movie extends React.Component {
     addToSavedList(this.state.movie);
   };
 
+  deleteThisMovie = (id) => {
+    axios.delete(`http://localhost:5000/api/movies/${id}`)
+      .then(response => {
+        this.props.fetchMovies();
+        this.props.history.push('/')
+      })
+  }
+
   // componentDidUpdate(){
   //   console.log(this.state.movie)
   // }
@@ -50,8 +62,7 @@ export default class Movie extends React.Component {
         </div>
 
         <button onClick={() => this.props.history.push(`/edit-movie/${this.state.movie.id}`)}>Edit</button>
-        <button>Delete</button>
-
+        <button onClick={() => this.deleteThisMovie(this.state.movie.id)}>Delete</button>
       </div>
     );
   }
